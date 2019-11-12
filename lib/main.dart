@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'ListPostUI.dart';
 import 'model/Post.dart';
 
 // request untuk ambil data dari internet
@@ -11,15 +12,14 @@ Future<List> getPost() async {
   final response = await http.get('https://jsonplaceholder.typicode.com/posts');
 
   if (response.statusCode == 200) {
-    // If server returns an OK response, parse the JSON.
-    var listPost = new List<Post>();
-
+    // If the call to the server was successful, parse the JSON.
+    var listPost = List<Post>();
     Iterable list = json.decode(response.body);
-    listPost = list.map((model) => Post.fromJson(model)).toList();
 
+    listPost = list.map((model) => Post.fromJson(model)).toList();
     return listPost;
   } else {
-    // If that response was not OK, throw an error.
+    // If that call was not successful, throw an error.
     throw Exception('Failed to load post');
   }
 }
@@ -65,23 +65,5 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         ),
       ),
     );
-  }
-}
-
-class ShowListUI extends StatelessWidget {
-  List listPost;
-
-  ShowListUI(this.listPost);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: listPost.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(listPost[index].title),
-            subtitle: Text(listPost[index].body),
-          );
-        });
   }
 }
